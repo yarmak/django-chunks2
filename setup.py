@@ -1,11 +1,11 @@
 from distutils.core import setup
 
 setup(name='chunks',
-      version='0.1',
+      version='2.0',
       description='Keyed blocks of content for use in your Django templates',
       author='Clint Ecker',
       author_email='me@clintecker.com',
-      url='http://code.google.com/p/django-chunks/',
+      url='https://github.com/code-on/django-chunks',
       packages=['chunks', 'chunks.templatetags'],
       classifiers=['Development Status :: 4 - Beta',
                    'Environment :: Web Environment',

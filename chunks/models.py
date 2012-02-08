@@ -1,4 +1,9 @@
 from django.db import models
+from django.core.cache import cache
+from django.utils.translation import ugettext_lazy as _
+
+
+CACHE_PREFIX = 'chunks_'
 
 class Chunk(models.Model):
     """
@@ -7,9 +12,27 @@ class Chunk(models.Model):
     any template with the use of a special template
     tag
     """
-    key = models.CharField(help_text="A unique name for this chunk of content", blank=False, max_length=255, unique=True)
-    content = models.TextField(blank=True)
-    description = models.CharField(blank=True, max_length=64, help_text="Short Description")
+    key = models.CharField(_('key'), max_length=255, unique=True, 
+                           help_text=_("A unique name for this chunk of content"))
+    content = models.TextField(_('content'), blank=True)
+
 
     def __unicode__(self):
-        return u"%s" % (self.key,)
+        return self.key
+    
+    def save(self, *args, **kwargs):
+        cache.delete(CACHE_PREFIX + self.key) # cache invalidation on save
+        super(Chunk, self).save(*args, **kwargs)
+    
+    
+    @staticmethod
+    def get(key):
+        cache_key = CACHE_PREFIX + key
+        content = cache.get(cache_key)
+        if content is None:
+            obj, c_ = Chunk.objects.get_or_create(key=key, defaults={'content': key}) 
+            cache.set(cache_key, obj.content)
+            content = obj.content
+        else:
+            content += '(from cache)'
+        return content
