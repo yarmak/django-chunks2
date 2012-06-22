@@ -4,22 +4,31 @@ from django.db import models
 from django.core.cache import cache
 from django.utils.translation import ugettext_lazy as _
 
+from . import managers
+
 CACHE_PREFIX = 'chunks_'
 
 
-class Chunk(models.Model):
+class BaseChunk(models.Model):
+
+    key = models.CharField(_(u'key'), max_length=255, unique=True,
+                           help_text=_(u'A unique name for this chunk of content'))
+
+    class Meta:
+        abstract = True
+
+    def __unicode__(self):
+        return self.key
+
+
+class Chunk(BaseChunk):
     u"""
     A Chunk is a piece of content associated
     with a unique key that can be inserted into
     any template with the use of a special template
     tag
     """
-    key = models.CharField(_(u'key'), max_length=255, unique=True,
-                           help_text=_(u'A unique name for this chunk of content'))
     content = models.TextField(_(u'content'), blank=True)
-
-    def __unicode__(self):
-        return self.key
 
     def save(self, *args, **kwargs):
         cache.delete(CACHE_PREFIX + self.key)  # cache invalidation on save
@@ -36,3 +45,12 @@ class Chunk(models.Model):
         else:
             content += '(from cache)'
         return content
+
+
+class Image(BaseChunk):
+    u"""
+    The same thing like Chunk but for images.
+    """
+    image = models.ImageField(upload_to=u'chunks', max_length=255)
+
+    objects = managers.ImageManager()

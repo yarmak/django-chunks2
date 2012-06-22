@@ -1,11 +1,18 @@
 # -*- coding: utf-8 -*-
 
 from django.contrib import admin
-from .models import Chunk
+from . import models
 
 
 class ChunkAdmin(admin.ModelAdmin):
-    list_display = ('key',)
+    list_display = ('key', )
     search_fields = ('key', 'content')
 
-admin.site.register(Chunk, ChunkAdmin)
+admin.site.register(models.Chunk, ChunkAdmin)
+
+
+class ImageAdmin(admin.ModelAdmin):
+    list_display = ('key', )
+    search_fields = ('key', )
+
+admin.site.register(models.Image, ImageAdmin)
