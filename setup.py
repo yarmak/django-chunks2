@@ -1,7 +1,7 @@
 from distutils.core import setup
 
 setup(name='chunks',
-      version='2.0',
+      version='2.1',
       description='Keyed blocks of content for use in your Django templates',
       author='Clint Ecker',
       author_email='me@clintecker.com',
