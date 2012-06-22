@@ -30,6 +30,10 @@ class Chunk(BaseChunk):
     """
     content = models.TextField(_(u'content'), blank=True)
 
+    class Meta:
+        verbose_name = _(u'Text Chunk')
+        verbose_name_plural = _(u'Text Chunks')
+
     def save(self, *args, **kwargs):
         cache.delete(CACHE_PREFIX + self.key)  # cache invalidation on save
         super(Chunk, self).save(*args, **kwargs)
@@ -51,6 +55,10 @@ class Image(BaseChunk):
     u"""
     The same thing like Chunk but for images.
     """
-    image = models.ImageField(upload_to=u'chunks', max_length=255)
+    image = models.ImageField(_(u'image'), upload_to=u'chunks', max_length=255)
 
     objects = managers.ImageManager()
+
+    class Meta:
+        verbose_name = _(u'Image Chunk')
+        verbose_name_plural = _(u'Image Chunks')
