@@ -17,6 +17,7 @@ class BaseChunk(models.Model):
 
     class Meta:
         abstract = True
+        ordering = ('key', )
 
     def __unicode__(self):
         return self.key
@@ -31,7 +32,7 @@ class Chunk(BaseChunk):
     """
     content = models.TextField(_(u'content'), blank=True)
 
-    class Meta:
+    class Meta(BaseChunk.Meta):
         verbose_name = _(u'Text Chunk')
         verbose_name_plural = _(u'Text Chunks')
 
@@ -59,6 +60,6 @@ class Image(BaseChunk):
 
     objects = managers.ImageManager()
 
-    class Meta:
+    class Meta(BaseChunk.Meta):
         verbose_name = _(u'Image Chunk')
         verbose_name_plural = _(u'Image Chunks')
