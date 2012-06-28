@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-06-22 13:44+0400\n"
-"PO-Revision-Date: 2012-06-22 13:45+0400\n"
+"POT-Creation-Date: 2012-06-28 16:19+0400\n"
+"PO-Revision-Date: 2012-06-28 16:20+0400\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -19,34 +19,46 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
 
-#: models.py:14
+#: models.py:15
 msgid "key"
 msgstr "ключ"
 
-#: models.py:15
+#: models.py:16
 msgid "A unique name for this chunk of content"
 msgstr "Уникальное имя для этого куска контента"
 
-#: models.py:31
+#: models.py:33
 msgid "content"
 msgstr "содержимое"
 
-#: models.py:34
+#: models.py:36
 msgid "Text Chunk"
 msgstr "Текстовый блок"
 
-#: models.py:35
+#: models.py:37
 msgid "Text Chunks"
 msgstr "Текстовые блоки"
 
-#: models.py:58
+#: models.py:59
 msgid "image"
 msgstr "изображение"
 
-#: models.py:63
+#: models.py:64
 msgid "Image Chunk"
 msgstr "Графический блок"
 
-#: models.py:64
+#: models.py:65
 msgid "Image Chunks"
 msgstr "Графические блоки"
+
+#: models.py:72
+msgid "Title"
+msgstr "Заголовок"
+
+#: models.py:73
+msgid "Description"
+msgstr "Описание"
+
+#: models.py:74 models.py:77 models.py:78
+msgid "Media"
+msgstr "Медиа"
