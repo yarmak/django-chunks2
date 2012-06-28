@@ -16,3 +16,10 @@ class ImageAdmin(admin.ModelAdmin):
     search_fields = ('key', )
 
 admin.site.register(models.Image, ImageAdmin)
+
+
+class MediaAdmin(admin.ModelAdmin):
+    list_display = ('key', 'title')
+    search_fields = ('key', 'title', 'desc')
+
+admin.site.register(models.Media, MediaAdmin)

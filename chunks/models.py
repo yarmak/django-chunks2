@@ -42,7 +42,7 @@ class Chunk(BaseChunk):
 
     @staticmethod
     def get(key):
-        cache_key = CACHE_PREFIX + get_language() + key
+        cache_key = CACHE_PREFIX + 'image' + get_language() + key
         content = cache.get(cache_key)
         if content is None:
             obj, created = Chunk.objects.get_or_create(
@@ -56,10 +56,33 @@ class Image(BaseChunk):
     u"""
     The same thing like Chunk but for images.
     """
-    image = models.ImageField(_(u'image'), upload_to=u'chunks', max_length=255)
+    image = models.ImageField(_(u'image'), upload_to=u'chunks/images', max_length=255)
 
     objects = managers.ImageManager()
 
     class Meta(BaseChunk.Meta):
         verbose_name = _(u'Image Chunk')
         verbose_name_plural = _(u'Image Chunks')
+
+
+class Media(BaseChunk):
+    u"""
+    The same thing like Chunk but for files.
+    """
+    title = models.CharField(max_length=64, verbose_name=_(u'Title'))
+    desc = models.CharField(max_length=256, blank=True, null=True, verbose_name=_(u'Description'))
+    media = models.FileField(upload_to='chunks/media', max_length=256, blank=True, null=True, verbose_name=_(u'Media'))
+
+    class Meta(BaseChunk.Meta):
+        verbose_name = _(u'Media')
+        verbose_name_plural = _(u'Media')
+
+    @staticmethod
+    def get(key):
+        cache_key = CACHE_PREFIX + 'media' + get_language() + key
+        obj = cache.get(cache_key)
+        if obj is None:
+            obj, created = Media.objects.get_or_create(
+                key=key, defaults={'title': key})
+            cache.set(cache_key, obj)
+        return obj

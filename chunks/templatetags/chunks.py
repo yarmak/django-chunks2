@@ -7,6 +7,7 @@ from django.template.loader import get_template
 
 Chunk = models.get_model('chunks', 'chunk')
 Image = models.get_model('chunks', 'image')
+Media = models.get_model('chunks', 'media')
 
 register = template.Library()
 
@@ -26,3 +27,15 @@ def chunk_image(key):
 @register.simple_tag
 def chunk_imgurl(key):
     return Image.objects.url(key)
+
+
+@register.simple_tag
+def chunk_media(key):
+    obj = Media.get(key)
+    tpl = get_template('chunks/media.html')
+    return tpl.render(Context(dict(obj=obj)))
+
+
+@register.inclusion_tag('chunks/media_list.html')
+def chunk_media_list():
+    return dict(media=Media.objects.all())
