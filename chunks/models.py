@@ -74,8 +74,8 @@ class Media(BaseChunk):
     media = models.FileField(upload_to='chunks/media', max_length=256, blank=True, null=True, verbose_name=_(u'Media'))
 
     class Meta(BaseChunk.Meta):
-        verbose_name = _(u'Media')
-        verbose_name_plural = _(u'Media')
+        verbose_name = _(u'Media Chunk')
+        verbose_name_plural = _(u'Media Chunks')
 
     @staticmethod
     def get(key):
