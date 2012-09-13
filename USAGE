@@ -44,6 +44,26 @@ This is really helpful in those cases where you want to use
 `django.contrib.flatpages` but you need multiple content areas.  I hope this 
 is helpful to people and I'll be making minor edits as I see them necessary.
 
+Nested chunks
+
+You can to use one chunks in other chunks, referensing to it as standart template variables.
+Avoid recursion :)
+
+For example:
+
+SOME_CHUNK1=
+
+    <div>
+        <h1> Blah blah blah</h1>
+        {{SOME_CHUNK2}}
+    </div>
+
+SOME_CHUNK2=
+
+    <p>
+        blah blah blah
+    </p>
+
 Caching
 
 If you want to cache the content of your chunks you can pass along a caching
