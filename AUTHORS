@@ -7,3 +7,5 @@ And then was almost entirely rewritten by Vitaliy Kucheriaviy ( http://code-on.b
 Adding Image and modeltranslation support by Ruslan Popov.
 
 Fixed setup on windows by Ruslan Markelov.
+
+Support for nested chunks by Ruslan Markelov.
