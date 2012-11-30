@@ -1,22 +1,22 @@
-Think of it as flatpages for small bits of reusable content you might want to 
+Think of it as flatpages for small bits of reusable content you might want to
 insert into your templates and manage from the admin interface.
 
 This is really nothing more than a model and a template tag.
 
-By adding `chunks` to your installed apps list in your Django project and 
-performing a `./manage.py syncdb`, you'll be able to add as many "keyed" bits 
+By adding `chunks` to your installed apps list in your Django project and
+performing a `./manage.py syncdb`, you'll be able to add as many "keyed" bits
 of content chunks to your site.
 
 The idea here is that you can create a chunk of content, name it with a unique
-key (for example: `home_page_left_bottom`) and then you can call this content 
+key (for example: `home_page_left_bottom`) and then you can call this content
 from a normal template.
 
 Why would anyone want this?
 
 It essentially allows someone to define "chunks" (I had wanted to call it
- blocks, but that would be very confusing for obvious reasons) of content in 
-your template that can be directly edited from the awesome Django admin 
-interface.  Throwing a rich text editor control on top of it make it even 
+ blocks, but that would be very confusing for obvious reasons) of content in
+your template that can be directly edited from the awesome Django admin
+interface.  Throwing a rich text editor control on top of it make it even
 easier.
 
 Template tag usage:
@@ -40,8 +40,8 @@ Template tag usage:
     </body>
 </html>
 
-This is really helpful in those cases where you want to use 
-`django.contrib.flatpages` but you need multiple content areas.  I hope this 
+This is really helpful in those cases where you want to use
+`django.contrib.flatpages` but you need multiple content areas.  I hope this
 is helpful to people and I'll be making minor edits as I see them necessary.
 
 Nested chunks
@@ -71,8 +71,19 @@ time argument in your chunk tag.  Example:
 
 {% chunk "home_page_left" 3600 %}
 
-The caching time is specified in seconds.  For caching to work properly you 
+The caching time is specified in seconds.  For caching to work properly you
 must configure a cache backend in your settings.py.  See the Django
 documentation for more information:
 
 http://www.djangoproject.com/documentation/cache/
+
+New abilities:
+
+  * Get just image URL:
+
+    <link rel="shortcut icon" href="{% chunk_plain "favicon" 600 image %}">
+
+  * Use custom templates:
+
+    {% chunk "description" 600 text "fontpage/chunked/description.html" %}
+    {% chunk_plain "device_view" 600 image "fontpage/chunked/device_view.html" %}
