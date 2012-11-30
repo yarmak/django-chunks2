@@ -14,12 +14,19 @@ class BaseChunk(models.Model):
     key = models.CharField(_(u'key'), max_length=255, unique=True,
                            help_text=_(u'A unique name for this chunk of content'))
 
+    content_type = 'unknown'
+
     class Meta:
         abstract = True
         ordering = ('key', )
 
     def __unicode__(self):
         return self.key
+
+    def save(self, *args, **kwargs):
+        cache_key = CACHE_PREFIX + self.content_type + get_language() + self.key
+        cache.delete(cache_key)  # cache invalidation on save
+        super(BaseChunk, self).save(*args, **kwargs)
 
 
 class Chunk(BaseChunk):
@@ -31,13 +38,11 @@ class Chunk(BaseChunk):
     """
     content = models.TextField(_(u'content'), blank=True)
 
+    content_type = 'text'
+
     class Meta(BaseChunk.Meta):
         verbose_name = _(u'Text Chunk')
         verbose_name_plural = _(u'Text Chunks')
-
-    def save(self, *args, **kwargs):
-        cache.delete(CACHE_PREFIX + get_language() + self.key)  # cache invalidation on save
-        super(Chunk, self).save(*args, **kwargs)
 
 
 class Image(BaseChunk):
@@ -45,6 +50,8 @@ class Image(BaseChunk):
     The same thing like Chunk but for images.
     """
     image = models.ImageField(_(u'image'), upload_to=u'chunks/images', max_length=255)
+
+    content_type = 'text'
 
     objects = managers.ImageManager()
 
@@ -60,6 +67,8 @@ class Media(BaseChunk):
     title = models.CharField(max_length=64, verbose_name=_(u'Title'))
     desc = models.CharField(max_length=256, blank=True, null=True, verbose_name=_(u'Description'))
     media = models.FileField(upload_to='chunks/media', max_length=256, blank=True, null=True, verbose_name=_(u'Media'))
+
+    content_type = 'text'
 
     class Meta(BaseChunk.Meta):
         verbose_name = _(u'Media Chunk')
