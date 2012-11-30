@@ -4,7 +4,6 @@ from django.db import models
 from django.core.cache import cache
 from django.utils.translation import get_language
 from django.utils.translation import ugettext_lazy as _
-from django.template.base import Lexer
 from . import managers
 
 CACHE_PREFIX = 'chunks_'
@@ -39,27 +38,6 @@ class Chunk(BaseChunk):
     def save(self, *args, **kwargs):
         cache.delete(CACHE_PREFIX + get_language() + self.key)  # cache invalidation on save
         super(Chunk, self).save(*args, **kwargs)
-
-    @staticmethod
-    def process_token(token):
-        #process TOKEN_VAR only
-        if token.token_type == 1:
-            return Chunk.get(token.contents)
-        else:
-            return token.contents    
-
-    @staticmethod
-    def get(key):
-        cache_key = CACHE_PREFIX + 'image' + get_language() + key
-        content = cache.get(cache_key)
-        if content is None:
-            obj, created = Chunk.objects.get_or_create(
-                key=key, defaults={'content': key})
-            #a content can to contain other chunks as vars
-            lexer = Lexer(obj.content,0)
-            content = ''.join(map(Chunk.process_token,lexer.tokenize()))
-            cache.set(cache_key, content)
-        return content
 
 
 class Image(BaseChunk):
