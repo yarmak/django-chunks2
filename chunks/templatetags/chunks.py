@@ -16,6 +16,7 @@ CACHE_PREFIX = 'chunks_'
 Chunk = models.get_model('chunks', 'chunk')
 Image = models.get_model('chunks', 'image')
 Media = models.get_model('chunks', 'media')
+Group = models.get_model('chunks', 'group')
 
 register = template.Library()
 logger = logging.getLogger(__name__)
@@ -30,7 +31,8 @@ class ChunkNode(template.Node):
         default_templates = dict(
             text='chunks/plain.html',
             image='chunks/image.html',
-            media='chunks/media.html'
+            media='chunks/media.html',
+            group='chunks/group.html'
         )
         if template_name is None:
             self.template_name = default_templates[content_type]
@@ -57,55 +59,62 @@ class ChunkNode(template.Node):
         else:
             real_tpl = self.template_name
 
-        # Eventually we want to pass the whole context to the template so that
-        # users have the maximum of flexibility of what to do in there.
-        if self.with_template:
-            new_ctx = template.Context({})
-            new_ctx.update(context)
-
-        sources = dict(text=Chunk, image=Image, media=Media)
+        sources = dict(text=Chunk, image=Image, media=Media, group=Group)
         model = sources[self.content_type]
 
-        try:
-            obj = None
-            if self.cache_time > 0:
-                cache_key = CACHE_PREFIX + self.content_type + get_language() + real_key
-                obj = cache.get(cache_key)
-            if obj is None:
+        obj = None
+        # try to get cached object
+        if self.cache_time > 0:
+            cache_key = CACHE_PREFIX + self.content_type + get_language() + real_key
+            obj = cache.get(cache_key)
+        # otherwise get it from database
+        if obj is None:
+            if self.content_type == 'group':
+                obj = model.objects.filter(key=real_key)
+                context['chunk_group'] = real_key
+            else:
                 try:
                     obj = model.objects.get(key=real_key)
                 except model.DoesNotExist:
+                    # this place we should create an empty object in database
                     obj = model(key=real_key)
                     if self.content_type == 'image':
-                        filename = dirname(__file__) + '/' + join('..', 'static', 'chunks', 'stub.png')
+                        # image object must exist, so save the stub picture
+                        filename = join(dirname(__file__), '..', 'static', 'chunks', 'stub.png')
                         with open(filename, 'r') as file:
                             obj.image.save(basename(filename), File(file), save=True)
                     else:
                         obj.content = real_key
                         obj.save()
 
-                if self.cache_time != 0:
-                    if self.cache_time is None or self.cache_time == 'None':
-                        logger.debug("Caching %s for the cache's default timeout"
-                                % (real_key,))
-                        cache.set(cache_key, obj)
-                    else:
-                        logger.debug("Caching %s for %s seconds" % (real_key,
-                            str(self.cache_time)))
-                        cache.set(cache_key, obj, int(self.cache_time))
-                else:
-                    logger.debug("Don't cache %s" % (real_key,))
-
-            if self.with_template:
-                tpl = template.loader.get_template(real_tpl)
-                new_ctx.update({'obj': obj})
-                return tpl.render(new_ctx)
-            elif hasattr(obj, 'image'):
-                return obj.image.url
+            # cache the object
+            if self.cache_time == 0:
+                logger.debug("Don't cache %s" % (real_key,))
             else:
-                return obj.content
-        except model.DoesNotExist:
-            return u''
+                if self.cache_time is None or self.cache_time == 'None':
+                    logger.debug("Caching %s for the cache's default timeout"
+                            % (real_key,))
+                    cache.set(cache_key, obj)
+                else:
+                    logger.debug("Caching %s for %s seconds" % (real_key,
+                        str(self.cache_time)))
+                    cache.set(cache_key, obj, int(self.cache_time))
+
+        # Eventually we want to pass the whole context to the template so that
+        # users have the maximum of flexibility of what to do in there.
+        if self.with_template:
+            new_ctx = template.Context({})
+            new_ctx.update(context)
+
+            tpl = template.loader.get_template(real_tpl)
+            new_ctx.update({'obj': obj})
+            return tpl.render(new_ctx)
+        elif hasattr(obj, 'image'):
+            return obj.image.url
+        elif hasattr(obj, 'content'):
+            return obj.content
+        else:
+            return None
 
 
 class BasicChunkWrapper(object):

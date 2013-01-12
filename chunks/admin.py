@@ -8,10 +8,18 @@ from . import widgets
 
 
 class ChunkAdmin(admin.ModelAdmin):
-    list_display = ('key', )
+    list_display = ('key', 'content')
     search_fields = ('key', 'content')
 
 admin.site.register(models.Chunk, ChunkAdmin)
+
+
+class GroupAdmin(admin.ModelAdmin):
+    list_display = ('key', 'content')
+    list_filter= ('key', )
+    search_fields = ('key', 'content')
+
+admin.site.register(models.Group, GroupAdmin)
 
 
 class ImageAdmin(admin.ModelAdmin):

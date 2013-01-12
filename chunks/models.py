@@ -45,6 +45,33 @@ class Chunk(BaseChunk):
         verbose_name_plural = _(u'Text Chunks')
 
 
+class Group(models.Model):
+    u"""
+    A Group is a list of content associated
+    with a unique key that can be inserted into
+    any template with the use of a special template
+    tag
+    """
+    key = models.CharField(_(u'key'), max_length=255, unique=False,
+                           help_text=_(u'A name for chunks group'))
+    content = models.TextField(_(u'content'), blank=True)
+
+    content_type = 'group'
+
+    class Meta:
+        verbose_name = _(u'Group Chunk')
+        verbose_name_plural = _(u'Group Chunks')
+        ordering = ('key', )
+
+    def __unicode__(self):
+        return self.key
+
+    def save(self, *args, **kwargs):
+        cache_key = CACHE_PREFIX + self.content_type + get_language() + self.key
+        cache.delete(cache_key)  # cache invalidation on save
+        super(Group, self).save(*args, **kwargs)
+
+
 class Image(BaseChunk):
     u"""
     The same thing like Chunk but for images.
