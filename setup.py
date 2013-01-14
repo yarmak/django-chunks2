@@ -4,7 +4,7 @@ import setuplib
 packages, package_data = setuplib.find_packages(['chunks', 'chunks.templatetags'])
 
 setup(name='chunks',
-      version='2.4',
+      version='2.5',
       description='Keyed blocks of content for use in your Django templates',
       author='Clint Ecker',
       author_email='me@clintecker.com',
