@@ -4,10 +4,10 @@ import logging
 from os.path import dirname, basename, join
 
 from django import template
-from django.db import models
 from django.core.cache import cache
 from django.core.files.base import File
-from django.template import Context
+from django.db import models
+from django.template import Context, Template
 from django.template.loader import get_template
 from django.utils.translation import get_language
 
@@ -103,11 +103,11 @@ class ChunkNode(template.Node):
         # Eventually we want to pass the whole context to the template so that
         # users have the maximum of flexibility of what to do in there.
         if self.with_template:
-            new_ctx = template.Context({})
-            new_ctx.update(context)
-
-            tpl = template.loader.get_template(real_tpl)
+            new_ctx = template.Context(context)
+            if hasattr(obj, 'content'):
+                obj.content = Template(obj.content).render(new_ctx)
             new_ctx.update({'obj': obj})
+            tpl = template.loader.get_template(real_tpl)
             return tpl.render(new_ctx)
         elif hasattr(obj, 'image'):
             return obj.image.url
