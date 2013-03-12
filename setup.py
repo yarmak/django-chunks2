@@ -4,11 +4,11 @@ import setuplib
 packages, package_data = setuplib.find_packages(['chunks', 'chunks.templatetags'])
 
 setup(name='chunks',
-      version='2.5',
+      version='2.6',
       description='Keyed blocks of content for use in your Django templates',
-      author='Clint Ecker',
-      author_email='me@clintecker.com',
-      url='https://github.com/code-on/django-chunks',
+      author='Ruslan Popov',
+      author_email='ruslan.popov@gmail.com',
+      url='https://github.com/RaD/django-chunks',
       install_requires=['easy_thumbnails'],
       packages=packages,
       package_data=package_data,
