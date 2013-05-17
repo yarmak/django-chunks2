@@ -1,7 +1,7 @@
 from distutils.core import setup
 import setuplib
 
-packages, package_data = setuplib.find_packages(['chunks', 'chunks.templatetags'])
+packages, package_data = setuplib.find_packages(['chunks', 'chunks.templatetags', 'migrations'])
 
 setup(name='chunks',
       version='2.6',
