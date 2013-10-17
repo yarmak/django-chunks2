@@ -23,8 +23,6 @@ class Migration(SchemaMigration):
         'chunks.chunk': {
             'Meta': {'ordering': "('key',)", 'object_name': 'Chunk'},
             'content': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'content_en': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
-            'content_ru': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'key': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '255'})
         },
@@ -43,16 +41,10 @@ class Migration(SchemaMigration):
         'chunks.media': {
             'Meta': {'ordering': "('key',)", 'object_name': 'Media'},
             'desc': ('django.db.models.fields.CharField', [], {'max_length': '256', 'null': 'True', 'blank': 'True'}),
-            'desc_en': ('django.db.models.fields.CharField', [], {'max_length': '256', 'null': 'True', 'blank': 'True'}),
-            'desc_ru': ('django.db.models.fields.CharField', [], {'max_length': '256', 'null': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'key': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '255'}),
             'media': ('django.db.models.fields.files.FileField', [], {'max_length': '256', 'null': 'True', 'blank': 'True'}),
-            'media_en': ('django.db.models.fields.files.FileField', [], {'max_length': '256', 'null': 'True', 'blank': 'True'}),
-            'media_ru': ('django.db.models.fields.files.FileField', [], {'max_length': '256', 'null': 'True', 'blank': 'True'}),
             'title': ('django.db.models.fields.CharField', [], {'max_length': '64'}),
-            'title_en': ('django.db.models.fields.CharField', [], {'max_length': '64', 'null': 'True', 'blank': 'True'}),
-            'title_ru': ('django.db.models.fields.CharField', [], {'max_length': '64', 'null': 'True', 'blank': 'True'})
         }
     }
 
