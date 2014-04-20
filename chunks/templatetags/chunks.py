@@ -25,20 +25,28 @@ logger = logging.getLogger(__name__)
 class ChunkNode(template.Node):
 
     def __init__(self, key, is_variable, cache_time=0, with_template=True,
-                template_name=None, tpl_is_variable=False,
+                name=None, tpl_is_variable=False,
                 content_type='text'):
 
         default_templates = dict(
             text='chunks/plain.html',
+            edit='chunks/editable.html',
             image='chunks/image.html',
             media='chunks/media.html',
             group='chunks/group.html'
         )
-        if template_name is None:
+        self.template_name = None
+        if content_type == 'edit':
+            # Special cade: Variable `name` holds a tag name.
+            self.tag = name
+        else:
+            self.template_name = name
+
+        if self.template_name is None:
             self.template_name = default_templates[content_type]
         else:
             if tpl_is_variable:
-                self.template_name = template.Variable(template_name)
+                self.template_name = template.Variable(self.template_name)
             else:
                 self.template_name = template_name
 
@@ -60,7 +68,9 @@ class ChunkNode(template.Node):
             real_tpl = self.template_name
 
         context['chunk_key'] = real_key
-        sources = dict(text=Chunk, image=Image, media=Media, group=Group)
+        if self.content_type == 'edit':
+            context['tag'] = self.tag
+        sources = dict(text=Chunk, edit=Chunk, image=Image, media=Media, group=Group)
         model = sources[self.content_type]
 
         obj = None
@@ -119,6 +129,13 @@ class ChunkNode(template.Node):
 
 class BasicChunkWrapper(object):
 
+    def __call__(self, parser, token):
+        self.prepare(parser, token)
+        return ChunkNode(self.key, self.is_variable, self.cache_time,
+                         name=self.name,
+                         tpl_is_variable=self.tpl_is_variable,
+                         content_type=self.content_type)
+
     def prepare(self, parser, token):
         u"""
         The parser checks for following tag-configurations::
@@ -127,14 +144,18 @@ class BasicChunkWrapper(object):
             {% chunk {key} {timeout} %}
             {% chunk {key} {timeout} {content_type} %}
             {% chunk {key} {timeout} {content_type} {tpl_name} %}
+
+        Also you can edit the content of <tag_name>:
+            {% chunk {key} {timeout} edit {tag_name} %}
         """
         tokens = token.split_contents()
         self.is_variable = False
         self.tpl_is_variable = False
         self.key = None
         self.cache_time = 0
-        self.tpl_name = None
+        self.name = None
         self.content_type = 'text'
+        self.tag = 'span'
 
         tag_name, self.key, args = tokens[0], tokens[1], tokens[2:]
         num_args = len(args)
@@ -143,12 +164,13 @@ class BasicChunkWrapper(object):
             t = "%r tag should have up to three arguments"
             raise template.TemplateSyntaxError, t % (tokens[0],)
 
+        import pdb; pdb.set_trace()
         if num_args >= 1:
             self.cache_time = args[0]
         if num_args >= 2:
             self.content_type = args[1]
         if num_args == 3:
-            self.tpl_name = args[2]
+            self.name = args[2] # template or tag name
 
         # Check to see if the slug is properly double/single quoted
         if not (self.key[0] == self.key[-1] and self.key[0] in ('"', "'")):
@@ -157,22 +179,15 @@ class BasicChunkWrapper(object):
             self.key = self.key[1:-1]
 
         # Clean up the template name
-        if self.tpl_name:
-            if not(self.tpl_name[0] == self.tpl_name[-1]
-                   and self.tpl_name[0] in ('"', "'")):
+        if self.name:
+            if not(self.name[0] == self.name[-1]
+                   and self.name[0] in ('"', "'")):
                 self.tpl_is_variable = True
             else:
-                self.tpl_name = self.tpl_name[1:-1]
+                self.name = self.name[1:-1]
 
         if self.cache_time is not None and self.cache_time != 'None':
             self.cache_time = int(self.cache_time)
-
-    def __call__(self, parser, token):
-        self.prepare(parser, token)
-        return ChunkNode(self.key, self.is_variable, self.cache_time,
-                         template_name=self.tpl_name,
-                         tpl_is_variable=self.tpl_is_variable,
-                         content_type=self.content_type)
 
 
 class PlainChunkWrapper(BasicChunkWrapper):
