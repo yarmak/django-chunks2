@@ -59,6 +59,7 @@ class ChunkNode(template.Node):
         else:
             real_tpl = self.template_name
 
+        context['chunk_key'] = real_key
         sources = dict(text=Chunk, image=Image, media=Media, group=Group)
         model = sources[self.content_type]
 
@@ -71,7 +72,6 @@ class ChunkNode(template.Node):
         if obj is None:
             if self.content_type == 'group':
                 obj = model.objects.filter(key=real_key)
-                context['chunk_group'] = real_key
             else:
                 try:
                     obj = model.objects.get(key=real_key)
@@ -140,7 +140,8 @@ class BasicChunkWrapper(object):
         num_args = len(args)
 
         if num_args not in xrange(4):
-            raise template.TemplateSyntaxError, "%r tag should have up to three arguments" % (tokens[0],)
+            t = "%r tag should have up to three arguments"
+            raise template.TemplateSyntaxError, t % (tokens[0],)
 
         if num_args >= 1:
             self.cache_time = args[0]
@@ -157,7 +158,8 @@ class BasicChunkWrapper(object):
 
         # Clean up the template name
         if self.tpl_name:
-            if not(self.tpl_name[0] == self.tpl_name[-1] and self.tpl_name[0] in ('"', "'")):
+            if not(self.tpl_name[0] == self.tpl_name[-1]
+                   and self.tpl_name[0] in ('"', "'")):
                 self.tpl_is_variable = True
             else:
                 self.tpl_name = self.tpl_name[1:-1]
@@ -168,9 +170,9 @@ class BasicChunkWrapper(object):
     def __call__(self, parser, token):
         self.prepare(parser, token)
         return ChunkNode(self.key, self.is_variable, self.cache_time,
-            template_name=self.tpl_name,
-            tpl_is_variable=self.tpl_is_variable,
-            content_type=self.content_type)
+                         template_name=self.tpl_name,
+                         tpl_is_variable=self.tpl_is_variable,
+                         content_type=self.content_type)
 
 
 class PlainChunkWrapper(BasicChunkWrapper):
