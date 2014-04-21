@@ -24,12 +24,10 @@
                                       function() {
                                           var txt = $('.edit_chunk form textarea').val();
                                           chunk.empty();
-                                          chunk.html(txt + '<a href="#">редактировать</a>')
-                                      }
-                                  );
+                                          chunk.html(txt + '<a href="#">редактировать</a>')});
                               },
                               error: function(d, s, x) { console.log('ERROR: ' + x.status); }
-                          });
+                          }).find('textarea').select();
                       });
                 return false;
             });
