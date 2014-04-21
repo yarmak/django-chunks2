@@ -164,7 +164,6 @@ class BasicChunkWrapper(object):
             t = "%r tag should have up to three arguments"
             raise template.TemplateSyntaxError, t % (tokens[0],)
 
-        import pdb; pdb.set_trace()
         if num_args >= 1:
             self.cache_time = args[0]
         if num_args >= 2:

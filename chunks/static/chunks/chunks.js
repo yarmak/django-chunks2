@@ -33,6 +33,5 @@
                       });
                 return false;
             });
-        $('.edit_chunk').delegate
     });
 })(jQuery);
