@@ -13,7 +13,7 @@
                           chunk.html(data)
                           $('form', chunk).ajaxForm({
                               dataType: 'text',
-                              beforeSubmit: function() { $('input', chunk).attr('disabled', 'disabled'); },
+                              beforeSubmit: function() { $('button', chunk).prop('disabled', true); },
                               success: function(d, s, x) {
                                   console.log('SUCCESS: ' + x.status);
                                   $('form', chunk).css({
