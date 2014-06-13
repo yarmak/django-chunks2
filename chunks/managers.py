@@ -7,7 +7,6 @@ from django.db import models
 
 
 class ImageManager(models.Manager):
-
     def url(self, key):
         try:
             obj = self.get(key=key)

@@ -10,9 +10,9 @@ CACHE_PREFIX = 'chunks_'
 
 
 class BaseChunk(models.Model):
-
-    key = models.CharField(_(u'key'), max_length=255, unique=True,
-                           help_text=_(u'A unique name for this chunk of content'))
+    key = models.CharField(
+        _(u'key'), max_length=255, unique=True,
+        help_text=_(u'A unique name for this chunk of content'))
 
     content_type = 'unknown'
 
@@ -76,7 +76,8 @@ class Image(BaseChunk):
     u"""
     The same thing like Chunk but for images.
     """
-    image = models.ImageField(_(u'image'), upload_to=u'chunks/images', max_length=255)
+    image = models.ImageField(
+        _(u'image'), upload_to=u'chunks/images', max_length=255)
 
     content_type = 'text'
 
@@ -92,8 +93,11 @@ class Media(BaseChunk):
     The same thing like Chunk but for files.
     """
     title = models.CharField(max_length=64, verbose_name=_(u'Title'))
-    desc = models.CharField(max_length=256, blank=True, null=True, verbose_name=_(u'Description'))
-    media = models.FileField(upload_to='chunks/media', max_length=256, blank=True, null=True, verbose_name=_(u'Media'))
+    desc = models.CharField(
+        max_length=256, blank=True, null=True, verbose_name=_(u'Description'))
+    media = models.FileField(
+        upload_to='chunks/media', max_length=256, blank=True, null=True,
+        verbose_name=_(u'Media'))
 
     content_type = 'text'
 

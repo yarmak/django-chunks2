@@ -3,8 +3,8 @@
 from django.http import HttpResponse, HttpResponseNotModified
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
-from . forms import EditForm
-from . models import Chunk
+from .forms import EditForm
+from .models import Chunk
 
 
 def edit_view(request, key):
@@ -16,5 +16,5 @@ def edit_view(request, key):
             return HttpResponse('')
         else:
             return HttpResponseNotModified('')
-    return render(request, 'chunks/editform.html',
-                  {'form': form, 'key': key})
+    return render(
+        request, 'chunks/editform.html', {'form': form, 'key': key})

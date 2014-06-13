@@ -23,10 +23,9 @@ logger = logging.getLogger(__name__)
 
 
 class ChunkNode(template.Node):
-
     def __init__(self, key, is_variable, cache_time=0, with_template=True,
-                name=None, tpl_is_variable=False,
-                content_type='text'):
+                 name=None, tpl_is_variable=False,
+                 content_type='text'):
 
         default_templates = dict(
             text='chunks/plain.html',
@@ -70,7 +69,8 @@ class ChunkNode(template.Node):
         context['chunk_key'] = real_key
         if self.content_type == 'edit':
             context['tag'] = self.tag
-        sources = dict(text=Chunk, edit=Chunk, image=Image, media=Media, group=Group)
+        sources = dict(
+            text=Chunk, edit=Chunk, image=Image, media=Media, group=Group)
         model = sources[self.content_type]
 
         obj = None
@@ -90,9 +90,12 @@ class ChunkNode(template.Node):
                     obj = model(key=real_key)
                     if self.content_type == 'image':
                         # image object must exist, so save the stub picture
-                        filename = join(dirname(__file__), '..', 'static', 'chunks', 'stub.png')
+                        filename = join(
+                            dirname(__file__), '..', 'static',
+                            'chunks', 'stub.png')
                         with open(filename, 'r') as file:
-                            obj.image.save(basename(filename), File(file), save=True)
+                            obj.image.save(
+                                basename(filename), File(file), save=True)
                     else:
                         obj.content = real_key
                         obj.save()
@@ -102,12 +105,14 @@ class ChunkNode(template.Node):
                 logger.debug("Don't cache %s" % (real_key,))
             else:
                 if self.cache_time is None or self.cache_time == 'None':
-                    logger.debug("Caching %s for the cache's default timeout"
-                            % (real_key,))
+                    logger.debug(
+                        "Caching %s for the cache's default timeout" % real_key
+                    )
                     cache.set(cache_key, obj)
                 else:
-                    logger.debug("Caching %s for %s seconds" % (real_key,
-                        str(self.cache_time)))
+                    logger.debug(
+                        "Caching %s for %s seconds" % (
+                            real_key, str(self.cache_time)))
                     cache.set(cache_key, obj, int(self.cache_time))
 
         # Eventually we want to pass the whole context to the template so that
@@ -128,7 +133,6 @@ class ChunkNode(template.Node):
 
 
 class BasicChunkWrapper(object):
-
     def __call__(self, parser, token):
         self.prepare(parser, token)
         return ChunkNode(self.key, self.is_variable, self.cache_time,
@@ -169,7 +173,7 @@ class BasicChunkWrapper(object):
         if num_args >= 2:
             self.content_type = args[1]
         if num_args == 3:
-            self.name = args[2] # template or tag name
+            self.name = args[2]  # template or tag name
 
         # Check to see if the slug is properly double/single quoted
         if not (self.key[0] == self.key[-1] and self.key[0] in ('"', "'")):
@@ -179,8 +183,8 @@ class BasicChunkWrapper(object):
 
         # Clean up the template name
         if self.name:
-            if not(self.name[0] == self.name[-1]
-                   and self.name[0] in ('"', "'")):
+            if not (self.name[0] == self.name[-1]
+                    and self.name[0] in ('"', "'")):
                 self.tpl_is_variable = True
             else:
                 self.name = self.name[1:-1]
@@ -190,10 +194,10 @@ class BasicChunkWrapper(object):
 
 
 class PlainChunkWrapper(BasicChunkWrapper):
-
     def __call__(self, parser, token):
         self.prepare(parser, token)
-        return ChunkNode(self.key, self.is_variable, self.cache_time,
+        return ChunkNode(
+            self.key, self.is_variable, self.cache_time,
             False, content_type=self.content_type)
 
 
