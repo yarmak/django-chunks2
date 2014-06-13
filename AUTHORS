@@ -9,3 +9,5 @@ Adding Image and modeltranslation support by Ruslan Popov.
 Fixed setup on windows by Ruslan Markelov.
 
 Support for nested chunks by Ruslan Markelov.
+
+Fixed setup problems + pep8 by GoTLiuM InSPiRiT.
