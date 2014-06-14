@@ -2,12 +2,14 @@ from setuptools import setup, find_packages
 
 setup(
     name='django-chunks2',
-    version='2.8',
+    version='2.8.1',
     description='Keyed blocks of content for use in your Django templates',
-    keywords="django metrics",
-    author='Ruslan Popov',
-    author_email='ruslan.popov@gmail.com',
-    url='https://github.com/RaD/django-chunks',
+    keywords="django chunks templates",
+    author='Clint Ecker',
+    author_email='me@clintecker.com',
+    url='https://github.com/gotlium/django-chunks2',
+    maintainer='gotlium',
+    maintainer_email='gotlium@gmail.com',
     packages=find_packages(exclude=['demo']),
     include_package_data=True,
     install_requires=[
