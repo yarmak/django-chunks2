@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='django-chunks2',
-    version='2.8.1',
+    version='2.8.2',
     description='Keyed blocks of content for use in your Django templates',
     keywords="django chunks templates",
     author='Clint Ecker',
@@ -12,6 +12,11 @@ setup(
     maintainer_email='gotlium@gmail.com',
     packages=find_packages(exclude=['demo']),
     include_package_data=True,
+    package_data={'chunks': [
+        'templates/chunks/*',
+        'static/chunks/*',
+        'locale/*/LC_MESSAGES/*'
+    ]},
     install_requires=[
         'easy_thumbnails',
     ],
