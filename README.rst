@@ -8,7 +8,7 @@ Installation:
 
 .. code-block:: bash
 
-    $ pip install django-chunks2
+    $ pip install -e git+https://github.com/yarmak/django-chunks2.git#egg=django-chunks2
 
 2. Add the ``chunks`` application to ``INSTALLED_APPS`` in your settings file (usually ``settings.py``)
 3. Sync database (``./manage.py syncdb`` or ``./manage.py migrate``)
